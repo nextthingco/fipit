@@ -11,9 +11,14 @@ BL30_NEW_BIN="${SCRIPT_DIR}/bl30_new.bin"
 BL31_IMG="${SCRIPT_DIR}/bl31.img"
 BL33_BIN="${SCRIPT_DIR}/bl31.img"
 
-FIP_BIN="${TMP_DIR}/fip.bin}"
+FIP_BIN="${TMP_DIR}/fip.bin"
 BOOT_NEW_BIN="${TMP_DIR}/boot_new.bin"
+
 BL2_NEW_BIN_SIG="${TMP_DIR}/bl2_new.bin.sig"
+BL30_NEW_BIN_ENC="${TMP_DIR}/bl30_new.bin.enc"
+BL31_IMG_ENC="${TMP_DIR}/bl31.img.enc"
+UBOOT_BIN_ENC="${TMP_DIR}/$(basename "${UBOOT_BIN}").enc"
+
 
 echo "fipin' '$UBOOT_BIN'..."
 
@@ -21,19 +26,17 @@ rm -f "${FIP_BIN}"
 ${SCRIPT_DIR}/fip_create --bl30 "${BL30_NEW_BIN}" --bl31 "${BL31_IMG}" --bl33 "${UBOOT_BIN}" "${FIP_BIN}"
 ${SCRIPT_DIR}/fip_create --dump "${FIP_BIN}"
 
-exit 
 cat "${BL2_NEW_BIN}" "${FIP_BIN}" >"${BOOT_NEW_BIN}"
 
-${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${BL30_NEW_BIN}"
-${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${BL31_IMG}"
-${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input ${UBOOT_BIN} --compress lz4
+${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${BL30_NEW_BIN}" --output "${BL30_NEW_BIN_ENC}"
+${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${BL31_IMG}" --output "${BL31_IMG_ENC}"
+${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${UBOOT_BIN}" --compress lz4 --output "${UBOOT_BIN_ENC}"
 ${SCRIPT_DIR}/aml_encrypt_gxl --bl2sig --input "${BL2_NEW_BIN}" --output "${BL2_NEW_BIN_SIG}"
 
-exit 
 ${SCRIPT_DIR}/aml_encrypt_gxl --bootmk --output output-u-boot.bin \
   --bl2   "${BL2_NEW_BIN_SIG}" \
-  --bl30  ../fip/gxl/bl30_new.bin.enc  \
-  --bl31  ../fip/gxl/bl31.img.enc \
-  --bl33  ../fip/gxl/bl33.bin.enc
+  --bl30  "${BL30_NEW_BIN_ENC}"  \
+  --bl31  "${BL31_IMG_ENC}" \
+  --bl33  "${UBOOT_BIN_ENC}"
 
 
