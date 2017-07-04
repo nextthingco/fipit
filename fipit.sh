@@ -6,6 +6,11 @@ UBOOT_BIN="${1:-$PWD/u-boot.bin}"
 TMP_DIR="${PWD}/tmp"
 mkdir -p "${TMP_DIR}"
 
+OUTPUT_DIR="${2:-$PWD/output}"
+mkdir -p "${OUTPUT_DIR}"
+
+OUTPUT_UBOOT_BIN="${OUTPUT_DIR}/$(basename "${UBOOT_BIN}")"
+
 BL2_NEW_BIN="${SCRIPT_DIR}/bl2_new.bin"
 BL30_NEW_BIN="${SCRIPT_DIR}/bl30_new.bin"
 BL31_IMG="${SCRIPT_DIR}/bl31.img"
@@ -33,7 +38,7 @@ ${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${BL31_IMG}" --output "${BL31_IM
 ${SCRIPT_DIR}/aml_encrypt_gxl --bl3enc --input "${UBOOT_BIN}" --compress lz4 --output "${UBOOT_BIN_ENC}"
 ${SCRIPT_DIR}/aml_encrypt_gxl --bl2sig --input "${BL2_NEW_BIN}" --output "${BL2_NEW_BIN_SIG}"
 
-${SCRIPT_DIR}/aml_encrypt_gxl --bootmk --output output-u-boot.bin \
+${SCRIPT_DIR}/aml_encrypt_gxl --bootmk --output ${OUTPUT_UBOOT_BIN} \
   --bl2   "${BL2_NEW_BIN_SIG}" \
   --bl30  "${BL30_NEW_BIN_ENC}"  \
   --bl31  "${BL31_IMG_ENC}" \
