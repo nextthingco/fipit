@@ -44,4 +44,4 @@ ${SCRIPT_DIR}/aml_encrypt_gxl --bootmk --output ${OUTPUT_UBOOT_BIN} \
   --bl31  "${BL31_IMG_ENC}" \
   --bl33  "${UBOOT_BIN_ENC}"
 
-
+rm -rf "${TMP_DIR}"
