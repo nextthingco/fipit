@@ -6,16 +6,17 @@ UBOOT_BIN="${1:-$PWD/u-boot.bin}"
 TMP_DIR="${PWD}/tmp"
 mkdir -p "${TMP_DIR}"
 
-OUTPUT_DIR="${2:-$PWD/output}"
+OUTPUT_DIR="${2:-$PWD/fip}"
 mkdir -p "${OUTPUT_DIR}"
 
 OUTPUT_UBOOT_BIN="${OUTPUT_DIR}/$(basename "${UBOOT_BIN}")"
 
+# input files
 BL2_NEW_BIN="${SCRIPT_DIR}/bl2_new.bin"
 BL30_NEW_BIN="${SCRIPT_DIR}/bl30_new.bin"
 BL31_IMG="${SCRIPT_DIR}/bl31.img"
-BL33_BIN="${SCRIPT_DIR}/bl31.img"
 
+# intermediate files to be crreated
 FIP_BIN="${TMP_DIR}/fip.bin"
 BOOT_NEW_BIN="${TMP_DIR}/boot_new.bin"
 
